@@ -3,25 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نیما چت</title>
+    <title>نیما چت پرو</title>
+    <!-- لود کردن آیکون‌ها -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --bg-color: #0b0f19;
+            --chat-bg: #111827;
+            --header-bg: #1f2937;
+            --text-color: #f3f4f6;
+            --sent-msg: #2563eb;
+            --received-msg: #374151;
+            --accent-color: #10b981;
+            --font-family: system-ui, sans-serif;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f3f4f6;
+            --chat-bg: #ffffff;
+            --header-bg: #e5e7eb;
+            --text-color: #1f2937;
+            --sent-msg: #3b82f6;
+            --received-msg: #e5e7eb;
+        }
+
+        .font-vazir { --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .font-serif { --font-family: Georgia, serif; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
         body {
-            font-family: sans-serif;
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #121212;
-            color: white;
-            margin: 0;
+            overflow: hidden;
         }
-        h1 { color: #00ffcc; }
+
+        .chat-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            background-color: var(--chat-bg);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* هدر چت */
+        .chat-header {
+            background-color: var(--header-bg);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            z-index: 10;
+        }
+        .header-user { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 40px; height: 40px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; }
+        .settings-btn { background: none; border: none; color: var(--text-color); font-size: 20px; cursor: pointer; padding: 5px; }
+
+        /* منوی تنظیمات کشویی */
+        .settings-menu {
+            position: absolute;
+            top: 65px;
+            right: 15px;
+            background-color: var(--header-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 15px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            z-index: 100;
+            width: 200px;
+        }
+        .settings-menu h4 { font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+        .menu-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .menu-row select, .menu-row button { background: var(--chat-bg); color: var(--text-color); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+
+        /* باکس پیام‌ها */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 80px; /* فضا برای دکمه اینستاگرام */
+        }
+        .message { max-width: 80px; padding: 10px 14px; border-radius: 16px; font-size: 15px; line-height: 1.4; word-wrap: break-word; animation: pop 0.2s ease-out; width: fit-content; }
+        .message.sent { background-color: var(--sent-msg); color: white; align-self: flex-end; border-bottom-left-radius: 2px; }
+        .message.received { background-color: var(--received-msg); color: var(--text-color); align-self: flex-start; border-bottom-right-radius: 2px; }
+        
+        /* استایل فایل‌های ارسالی */
+        .message img, .message video { max-width: 100%; border-radius: 10px; display: block; margin-top: 5px; }
+        audio { max-width: 100%; margin-top: 5px; }
+
+        /* دکمه اینستاگرام پایین وسط */
+        .instagram-bar {
+            position: absolute;
+            bottom: 75px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .instagram-btn {
+            pointer-events: auto;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(220, 39, 67, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        /* بخش ارسال پیام و فایل */
+        .chat-input-area {
+            background-color: var(--header-bg);
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .chat-input-area input[type="text"] {
+            flex: 1;
+            background-color: var(--chat-bg);
+            border: none;
+            outline: none;
+            padding: 12px;
+            border-radius: 25px;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+        .icon-btn { background: none; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; width: 38px; height: 38px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
+        .icon-btn:hover { background-color: rgba(255,255,255,0.1); }
+        .send-btn { background-color: var(--sent-msg); color: white; }
+        .send-btn:hover { background-color: #1d4ed8; }
+        .recording { color: #ef4444; animation: blink 1s infinite; }
+
+        /* انیمیشن‌ها */
+        @keyframes pop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
-    <div>
-        <h1>سایت نیما چت آنلاین شد!</h1>
-        <p>این یک صفحه تست برای گیت‌هاب پیجزه.</p>
+
+    <div class="chat-container">
+        <!-- هدر و تنظیمات -->
+        <div class="chat-header">
+            <div class="header-user">
+                <div class="avatar"><i class="fa-solid : user"></i>N</div>
+                <div>
+                    <h3>نیما چت پرو</h3>
+                    <small style="color: var(--accent-color)">● آنلاین</small>
+                </div>
+            </div>
+            <button class="settings-btn" onclick="toggleSettings()"><i class="fa-solid fa-gear"></i></button>
+        </div>
+
+        <!-- منوی کشویی تنظیمات -->
+        <div class="settings-menu" id="settingsMenu">
+            <h4>تنظیمات ظاهر</h4>
+            <div class="menu-row">
+                <span>حالت صفحه:</span>
+                <button onclick="toggleTheme()" id="themeBtn">روز</button>
+            </div>
+            <div class="menu-row">
+                <span>نوع فونت:</span>
+                <select onchange="changeFont(this.value)">
+                    <option value="font-sans">ساده</option>
+                    <option value="font-vazir">مدرن</option>
+                    <option value="font-serif">کلاسیک</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- باکس نمایش پیام‌ها -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message received">سلام! به محیط فوق‌العاده نیما چت خوش اومدی 🚀</div>
+            <div class="message received">اینجا می‌تونی متن، عکس، فیلم و حتی ویس بفرستی! امتحانش کن.</div>
+        </div>
+
+        <!-- دکمه اینستاگرام پایین وسط -->
+        <div class="instagram-bar">
+            <!-- آدرس اینستاگرام خودت رو به جای علامت # در خط پایین بذار -->
+            <a href="https://instagram.com/" target="_blank" class="instagram-btn">
+                <i class="fa-brands fa-instagram"></i> پیج اینستاگرام ما
+            </a>
+        </div>
+
+        <!-- بخش ابزارها و ارسال پیام -->
+        <div class="chat-input-area">
+            <!-- آپلود فایلهای پنهان -->
+            <input type="file" id="fileInput" accept="image/*,video/*" style="display:none" onchange="handleFile(event)">
+            
+            <button class="icon-btn" onclick="document.getElementById('fileInput').click()" title="ارسال عکس یا فیلم">
+                <i class="fa-solid fa-paperclip"></i>
+            </button>
+            <button class="icon-btn" id="voiceBtn" onclick="toggleVoiceRecord()" title="ضبط صدا">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            
+            <input type="text" id="messageInput" placeholder="چیزی بنویسید..." onkeypress="if(event.key === 'Enter') sendTextMessage()">
+            
+            <button class="icon-btn send-btn" onclick="sendTextMessage()">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
     </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const settingsMenu = document.getElementById('settingsMenu');
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // منوی تنظیمات
+        function toggleSettings() {
+            settingsMenu.style.display = settingsMenu.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // تغییر تم شب و روز
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+                document.getElementById('themeBtn').textContent = 'روز';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.getElementById('themeBtn').textContent = 'شب';
+            }
+        }
+
+        // تغییر فونت
+        function changeFont(fontClass) {
+            document.body.className = fontClass;
+        }
+
+        // اسکرول به پایین چت
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // ارسال پیام متنی
+        function sendTextMessage() {
+            const text = messageInput.value.trim();
+            if(!text) return;
+            
+            const msg = document.createElement('div');
+            msg.className = 'message sent';
+            msg.textContent = text;
+            chatMessages.appendChild(msg);
+            
+            messageInput.value = '';
+            scrollToBottom();
+        }
+
+        // ارسال فایل (عکس و فیلم)
+        function handleFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const msg = document.createElement('div');
+            msg.className = 'message sent';
+            
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                msg.appendChild(img);
+            } else if (file.type.startsWith('video/')) {
+                const video = document.createElement('video');
+                video.src = URL.createObjectURL(file);
+                video.controls = true;
+                msg.appendChild(video);
+            }
+            
+            chatMessages.appendChild(msg);
+            scrollToBottom();
+        }
+
+        // ضبط ویس (صدا)
+        async function toggleVoiceRecord() {
+            const voiceBtn = document.getElementById('voiceBtn');
+            if (!isRecording) {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    alert('مرورگر شما از ضبط صدا پشتیبانی نمی‌کند.');
+                    return;
+                }
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+                    const msg = document.createElement('div');
+                    msg.className = 'message sent';
+                    const audio = document.createElement('audio');
+                    audio.src = URL.createObjectURL(audioBlob);
+                    audio.controls = true;
+                    msg.appendChild(audio);
+                    chatMessages.appendChild(msg);
+                    scrollToBottom();
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                voiceBtn.classList.add('recording');
+                voiceBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                voiceBtn.classList.remove('recording');
+                voiceBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+            }
+        }
+    </script>
 </body>
 </html>
