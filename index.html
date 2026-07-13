@@ -3,338 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نیما چت پرو</title>
-    <!-- لود کردن آیکون‌ها -->
+    <title>۴۰۵ چت</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --chat-bg: #111827;
-            --header-bg: #1f2937;
-            --text-color: #f3f4f6;
-            --sent-msg: #2563eb;
-            --received-msg: #374151;
-            --accent-color: #10b981;
-            --font-family: system-ui, sans-serif;
-        }
-
-        [data-theme="light"] {
-            --bg-color: #f3f4f6;
-            --chat-bg: #ffffff;
-            --header-bg: #e5e7eb;
-            --text-color: #1f2937;
-            --sent-msg: #3b82f6;
-            --received-msg: #e5e7eb;
-        }
-
-        .font-vazir { --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .font-serif { --font-family: Georgia, serif; }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
-        body {
-            font-family: var(--font-family);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .chat-container {
-            width: 100%;
-            max-width: 480px;
-            height: 100vh;
-            background-color: var(--chat-bg);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* هدر چت */
-        .chat-header {
-            background-color: var(--header-bg);
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            z-index: 10;
-        }
-        .header-user { display: flex; align-items: center; gap: 10px; }
-        .avatar { width: 40px; height: 40px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; }
-        .settings-btn { background: none; border: none; color: var(--text-color); font-size: 20px; cursor: pointer; padding: 5px; }
-
-        /* منوی تنظیمات کشویی */
-        .settings-menu {
-            position: absolute;
-            top: 65px;
-            right: 15px;
-            background-color: var(--header-bg);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            padding: 15px;
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            z-index: 100;
-            width: 200px;
-        }
-        .settings-menu h4 { font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
-        .menu-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-        .menu-row select, .menu-row button { background: var(--chat-bg); color: var(--text-color); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
-
-        /* باکس پیام‌ها */
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding-bottom: 80px; /* فضا برای دکمه اینستاگرام */
-        }
-        .message { max-width: 80px; padding: 10px 14px; border-radius: 16px; font-size: 15px; line-height: 1.4; word-wrap: break-word; animation: pop 0.2s ease-out; width: fit-content; }
-        .message.sent { background-color: var(--sent-msg); color: white; align-self: flex-end; border-bottom-left-radius: 2px; }
-        .message.received { background-color: var(--received-msg); color: var(--text-color); align-self: flex-start; border-bottom-right-radius: 2px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         
-        /* استایل فایل‌های ارسالی */
-        .message img, .message video { max-width: 100%; border-radius: 10px; display: block; margin-top: 5px; }
-        audio { max-width: 100%; margin-top: 5px; }
+        .app-container { width: 100%; max-width: 480px; height: 100vh; background-color: #1e293b; display: flex; flex-direction: column; position: relative; }
+        
+        /* ۱. صفحه ورود */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100%; position: absolute; top: 0; left: 0; z-index: 10; background: #0f172a; padding: 30px; justify-content: center; align-items: center; }
+        .screen.active { display: flex; }
+        .login-logo { font-size: 60px; color: #38bdf8; margin-bottom: 20px; animation: bounce 2s infinite; }
+        .login-input { width: 100%; padding: 14px; background: #1e293b; border: 2px solid #334155; border-radius: 12px; color: white; text-align: center; font-size: 16px; margin-bottom: 15px; outline: none; }
+        .login-input:focus { border-color: #38bdf8; }
+        .avatar-select { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; cursor: pointer; }
+        .avatar-preview { width: 90px; height: 90px; border-radius: 50%; background: #334155; display: flex; justify-content: center; align-items: center; font-size: 32px; overflow: hidden; border: 3px solid #38bdf8; }
+        .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-main { width: 100%; padding: 14px; background: #38bdf8; color: #0f172a; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
-        /* دکمه اینستاگرام پایین وسط */
-        .instagram-bar {
-            position: absolute;
-            bottom: 75px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 5;
-        }
-        .instagram-btn {
-            pointer-events: auto;
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            color: white;
-            padding: 8px 18px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(220, 39, 67, 0.4);
-            animation: pulse 2s infinite;
-        }
+        /* ۲. صفحه لیست مخاطبین */
+        .header { background: #1e293b; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+        .contact-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .contact-item { display: flex; align-items: center; padding: 12px; background: #1e293b; border-radius: 12px; margin-bottom: 8px; cursor: pointer; border: 1px solid #334155; }
+        .contact-item:hover { background: #334155; }
+        .c-avatar { width: 45px; height: 45px; border-radius: 50%; background: #475569; margin-left: 12px; display: flex; justify-content: center; align-items: center; font-weight: bold; overflow: hidden; }
+        .c-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .add-contact-bar { padding: 10px; background: #0f172a; display: flex; gap: 8px; }
 
-        /* بخش ارسال پیام و فایل */
-        .chat-input-area {
-            background-color: var(--header-bg);
-            padding: 12px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        .chat-input-area input[type="text"] {
-            flex: 1;
-            background-color: var(--chat-bg);
-            border: none;
-            outline: none;
-            padding: 12px;
-            border-radius: 25px;
-            color: var(--text-color);
-            font-size: 14px;
-        }
-        .icon-btn { background: none; border: none; color: var(--text-color); font-size: 18px; cursor: pointer; width: 38px; height: 38px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
-        .icon-btn:hover { background-color: rgba(255,255,255,0.1); }
-        .send-btn { background-color: var(--sent-msg); color: white; }
-        .send-btn:hover { background-color: #1d4ed8; }
-        .recording { color: #ef4444; animation: blink 1s infinite; }
+        /* ۳. صفحه اصلی چت (با پس‌زمینه ۴۰۵) */
+        .chat-screen { background-image: url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600'); background-size: cover; background-position: center; position: relative; }
+        .chat-overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(15, 23, 42, 0.75); display: flex; flex-direction: column; }
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        
+        .message { max-width: 75%; padding: 10px 14px; border-radius: 16px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
+        .message.sent { background: #2563eb; color: white; align-self: flex-end; border-bottom-left-radius: 2px; }
+        .message.received { background: #334155; color: white; align-self: flex-start; border-bottom-right-radius: 2px; }
+        .message img, .message video { max-width: 100%; border-radius: 8px; margin-top: 5px; display: block; }
 
-        /* انیمیشن‌ها */
-        @keyframes pop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        /* ابزار ارسال پیام */
+        .input-area { background: #1e293b; padding: 12px; display: flex; gap: 8px; align-items: center; }
+        .input-area input { flex: 1; background: #0f172a; border: none; padding: 12px 16px; border-radius: 25px; color: white; outline: none; }
+        .btn-icon { background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
+        .btn-icon:hover { background: rgba(255,255,255,0.05); color: white; }
+        .btn-send { background: #38bdf8; color: #0f172a; }
+
+        /* ۴. صفحه نمایش تماس صوتی/تصویری */
+        .call-screen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 200; flex-direction: column; justify-content: space-between; padding: 40px; align-items: center; }
+        .call-profile { text-align: center; margin-top: 40px; }
+        .call-avatar { width: 120px; height: 120px; border-radius: 50%; background: #334155; margin-bottom: 15px; border: 4px solid #38bdf8; display: flex; justify-content: center; align-items: center; font-size: 50px; overflow: hidden; }
+        .call-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .video-preview { width: 100%; height: 60%; background: #1e293b; border-radius: 20px; display: none; margin-top: 20px; border: 2px solid #38bdf8; position: relative; overflow: hidden; }
+        .video-preview video { width: 100%; height: 100%; object-fit: cover; }
+        .call-actions { display: flex; gap: 30px; margin-bottom: 30px; }
+        .btn-call { width: 60px; height: 60px; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; font-size: 22px; cursor: pointer; color: white; }
+        .btn-hangup { background: #ef4444; }
+
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .recording { color: #ef4444; animation: pulse 1s infinite; }
+        @keyframes pulse { 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
-    <div class="chat-container">
-        <!-- هدر و تنظیمات -->
-        <div class="chat-header">
-            <div class="header-user">
-                <div class="avatar"><i class="fa-solid : user"></i>N</div>
-                <div>
-                    <h3>نیما چت پرو</h3>
-                    <small style="color: var(--accent-color)">● آنلاین</small>
+    <div class="app-container">
+        
+        <!-- صفحه اول: ثبت نام / ورود -->
+        <div class="screen active" id="loginScreen">
+            <div class="login-logo"><i class="fa-solid fa-car"></i></div>
+            <h2 style="margin-bottom: 20px;">خوش آمدید به ۴۰۵ چت</h2>
+            
+            <div class="avatar-select" onclick="document.getElementById('profileImgInput').click()">
+                <div class="avatar-preview" id="avatarPreview"><i class="fa-solid fa-user"></i></div>
+                <span style="font-size: 12px; color: #38bdf8; margin-top: 8px;">انتخاب عکس پروفایل</span>
+            </div>
+            <input type="file" id="profileImgInput" accept="image/*" style="display:none" onchange="previewProfileImg(event)">
+
+            <input type="text" class="login-input" id="loginPhone" placeholder="شماره موبایل خود را وارد کنید...">
+            <button class="btn-main" onclick="handleLogin()">ورود به برنامه</button>
+        </div>
+
+        <!-- صفحه دوم: لیست مخاطبین -->
+        <div class="screen" id="contactsScreen">
+            <div class="header" style="width: 100%;">
+                <h3>مخاطبین چت</h3>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="c-avatar" id="myProfileAvatar" style="width:35px; height:35px; margin:0;"></div>
                 </div>
             </div>
-            <button class="settings-btn" onclick="toggleSettings()"><i class="fa-solid fa-gear"></i></button>
-        </div>
-
-        <!-- منوی کشویی تنظیمات -->
-        <div class="settings-menu" id="settingsMenu">
-            <h4>تنظیمات ظاهر</h4>
-            <div class="menu-row">
-                <span>حالت صفحه:</span>
-                <button onclick="toggleTheme()" id="themeBtn">روز</button>
+            
+            <div class="add-contact-bar">
+                <input type="text" class="login-input" id="newContactName" placeholder="نام مخاطب" style="margin:0; padding:8px;">
+                <input type="text" class="login-input" id="newContactPhone" placeholder="شماره مخاطب" style="margin:0; padding:8px;">
+                <button class="btn-main" onclick="addContact()" style="width:auto; padding:8px 15px;">افزودن</button>
             </div>
-            <div class="menu-row">
-                <span>نوع فونت:</span>
-                <select onchange="changeFont(this.value)">
-                    <option value="font-sans">ساده</option>
-                    <option value="font-vazir">مدرن</option>
-                    <option value="font-serif">کلاسیک</option>
-                </select>
+
+            <div class="contact-list" id="contactListContainer">
+                <!-- مخاطب پیش‌فرض -->
+                <div class="contact-item" onclick="openChat('پشتیبانی چت', '')">
+                    <div class="c-avatar">P</div>
+                    <div>
+                        <h4>پشتیبانی ۴۰۵ چت</h4>
+                        <small style="color: #10b981;">شماره شما به هیچکس نمایش داده نمی‌شود</small>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- باکس نمایش پیام‌ها -->
-        <div class="chat-messages" id="chatMessages">
-            <div class="message received">سلام! به محیط فوق‌العاده نیما چت خوش اومدی 🚀</div>
-            <div class="message received">اینجا می‌تونی متن، عکس، فیلم و حتی ویس بفرستی! امتحانش کن.</div>
+        <!-- صفحه سوم: محیط چت با پس زمینه پژو ۴۰۵ -->
+        <div class="screen chat-screen" id="chatScreen" style="padding:0;">
+            <div class="chat-overlay">
+                <div class="header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button class="btn-icon" onclick="backToContacts()" style="color:white;"><i class="fa-solid fa-arrow-right"></i></button>
+                        <div class="c-avatar" id="chatUserAvatar" style="width:35px; height:35px; margin:0;"></div>
+                        <h4 id="chatTitle">نام مخاطب</h4>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn-icon" onclick="startCall('voice')" style="color:white;"><i class="fa-solid fa-phone"></i></button>
+                        <button class="btn-icon" onclick="startCall('video')" style="color:white;"><i class="fa-solid fa-video"></i></button>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages"></div>
+
+                <div class="input-area">
+                    <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none" onchange="sendMedia(event)">
+                    <button class="btn-icon" onclick="document.getElementById('mediaInput').click()"><i class="fa-solid fa-paperclip"></i></button>
+                    <button class="btn-icon" id="micBtn" onclick="toggleVoice()"><i class="fa-solid fa-microphone"></i></button>
+                    
+                    <input type="text" id="msgInput" placeholder="پیام خود را بنویسید..." onkeypress="if(event.key==='Enter') sendText()">
+                    <button class="btn-icon btn-send" onclick="sendText()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
         </div>
 
-        <!-- دکمه اینستاگرام پایین وسط -->
-        <div class="instagram-bar">
-            <!-- آدرس اینستاگرام خودت رو به جای علامت # در خط پایین بذار -->
-            <a href="https://instagram.com/" target="_blank" class="instagram-btn">
-                <i class="fa-brands fa-instagram"></i> پیج اینستاگرام ما
-            </a>
+        <!-- صفحه چهارم: شبیه‌ساز تماس صوتی و تصویری -->
+        <div class="call-screen" id="callScreen">
+            <div class="call-profile" id="callProfileInfo">
+                <div class="call-avatar" id="callAvatarContainer"></div>
+                <h2 id="callName">نام مخاطب</h2>
+                <p id="callStatus" style="color: #38bdf8; margin-top: 10px;">در حال برقراری تماس...</p>
+            </div>
+
+            <div class="video-preview" id="videoPreviewBox">
+                <!-- دوربین شبیه‌سازی شده -->
+                <video id="localVideo" autoplay playsinline muted></video>
+            </div>
+
+            <div class="call-actions">
+                <button class="btn-call btn-hangup" onclick="endCall()"><i class="fa-solid fa-phone-slash"></i></button>
+            </div>
         </div>
 
-        <!-- بخش ابزارها و ارسال پیام -->
-        <div class="chat-input-area">
-            <!-- آپلود فایلهای پنهان -->
-            <input type="file" id="fileInput" accept="image/*,video/*" style="display:none" onchange="handleFile(event)">
-            
-            <button class="icon-btn" onclick="document.getElementById('fileInput').click()" title="ارسال عکس یا فیلم">
-                <i class="fa-solid fa-paperclip"></i>
-            </button>
-            <button class="icon-btn" id="voiceBtn" onclick="toggleVoiceRecord()" title="ضبط صدا">
-                <i class="fa-solid fa-microphone"></i>
-            </button>
-            
-            <input type="text" id="messageInput" placeholder="چیزی بنویسید..." onkeypress="if(event.key === 'Enter') sendTextMessage()">
-            
-            <button class="icon-btn send-btn" onclick="sendTextMessage()">
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
-        </div>
     </div>
 
     <script>
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const settingsMenu = document.getElementById('settingsMenu');
+        let myUser = { phone: '', avatar: '' };
+        let activeChatUser = '';
         let mediaRecorder;
         let audioChunks = [];
         let isRecording = false;
+        let localStream;
 
-        // منوی تنظیمات
-        function toggleSettings() {
-            settingsMenu.style.display = settingsMenu.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        // تغییر تم شب و روز
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                document.documentElement.removeAttribute('data-theme');
-                document.getElementById('themeBtn').textContent = 'روز';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                document.getElementById('themeBtn').textContent = 'شب';
+        // پیش نمایش عکس پروفایل هنگام ثبت نام
+        function previewProfileImg(e) {
+            const file = e.target.files[0];
+            if(file) {
+                myUser.avatar = URL.createObjectURL(file);
+                document.getElementById('avatarPreview').innerHTML = `<img src="${myUser.avatar}">`;
             }
         }
 
-        // تغییر فونت
-        function changeFont(fontClass) {
-            document.body.className = fontClass;
+        // ورود
+        function handleLogin() {
+            const phone = document.getElementById('loginPhone').value.trim();
+            if(!phone) { alert('لطفاً شماره تلفن خود را وارد کنید.'); return; }
+            myUser.phone = phone;
+            
+            // تنظیم تصویر هدر منو
+            document.getElementById('myProfileAvatar').innerHTML = myUser.avatar ? `<img src="${myUser.avatar}">` : 'M';
+            
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('contactsScreen').classList.add('active');
         }
 
-        // اسکرول به پایین چت
-        function scrollToBottom() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        // افزودن مخاطب جدید
+        function addContact() {
+            const name = document.getElementById('newContactName').value.trim();
+            const phone = document.getElementById('newContactPhone').value.trim();
+            if(!name || !phone) { alert('نام و شماره مخاطب را وارد کنید'); return; }
+
+            const container = document.getElementById('contactListContainer');
+            const item = document.createElement('div');
+            item.className = 'contact-item';
+            item.onclick = () => openChat(name, '');
+            item.innerHTML = `
+                <div class="c-avatar">${name[0]}</div>
+                <div>
+                    <h4>${name}</h4>
+                    <small style="color: #94a3b8;">آفلاین (شماره محفوظ)</small>
+                </div>
+            `;
+            container.appendChild(item);
+            document.getElementById('newContactName').value = '';
+            document.getElementById('newContactPhone').value = '';
+        }
+
+        // باز کردن صفحه چت
+        function openChat(name, avatar) {
+            activeChatUser = name;
+            document.getElementById('chatTitle').textContent = name;
+            document.getElementById('chatUserAvatar').innerHTML = avatar ? `<img src="${avatar}">` : name[0];
+            document.getElementById('chatMessages').innerHTML = ''; // پاک کردن چت قبلی شبیه‌ساز
+            
+            document.getElementById('contactsScreen').classList.remove('active');
+            document.getElementById('chatScreen').classList.add('active');
+        }
+
+        function backToContacts() {
+            document.getElementById('chatScreen').classList.remove('active');
+            document.getElementById('contactsScreen').classList.add('active');
         }
 
         // ارسال پیام متنی
-        function sendTextMessage() {
-            const text = messageInput.value.trim();
-            if(!text) return;
-            
-            const msg = document.createElement('div');
-            msg.className = 'message sent';
-            msg.textContent = text;
-            chatMessages.appendChild(msg);
-            
-            messageInput.value = '';
-            scrollToBottom();
+        function sendText() {
+            const input = document.getElementById('msgInput');
+            if(!input.value.trim()) return;
+            appendMessage(input.value.trim(), 'sent');
+            input.value = '';
         }
 
-        // ارسال فایل (عکس و فیلم)
-        function handleFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const msg = document.createElement('div');
-            msg.className = 'message sent';
-            
-            if (file.type.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
-                msg.appendChild(img);
-            } else if (file.type.startsWith('video/')) {
-                const video = document.createElement('video');
-                video.src = URL.createObjectURL(file);
-                video.controls = true;
-                msg.appendChild(video);
-            }
-            
-            chatMessages.appendChild(msg);
-            scrollToBottom();
+        // ارسال عکس و فیلم
+        function sendMedia(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const url = URL.createObjectURL(file);
+            appendMessage(url, 'sent', file.type.startsWith('image/') ? 'img' : 'video');
         }
 
-        // ضبط ویس (صدا)
-        async function toggleVoiceRecord() {
-            const voiceBtn = document.getElementById('voiceBtn');
-            if (!isRecording) {
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    alert('مرورگر شما از ضبط صدا پشتیبانی نمی‌کند.');
-                    return;
-                }
+        // ضبط و ارسال ویس
+        async function toggleVoice() {
+            const btn = document.getElementById('micBtn');
+            if(!isRecording) {
+                if(!navigator.mediaDevices) return alert('عدم دسترسی به میکروفون');
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
-                
                 mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                 mediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
-                    const msg = document.createElement('div');
-                    msg.className = 'message sent';
-                    const audio = document.createElement('audio');
-                    audio.src = URL.createObjectURL(audioBlob);
-                    audio.controls = true;
-                    msg.appendChild(audio);
-                    chatMessages.appendChild(msg);
-                    scrollToBottom();
+                    const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                    appendMessage(URL.createObjectURL(blob), 'sent', 'audio');
                 };
-
                 mediaRecorder.start();
                 isRecording = true;
-                voiceBtn.classList.add('recording');
-                voiceBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
+                btn.innerHTML = '<i class="fa-solid fa-stop"></i>';
+                btn.classList.add('recording');
             } else {
                 mediaRecorder.stop();
                 isRecording = false;
-                voiceBtn.classList.remove('recording');
-                voiceBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+                btn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+                btn.classList.remove('recording');
             }
+        }
+
+        function appendMessage(content, type, mediaType = 'text') {
+            const container = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            
+            if(mediaType === 'text') msg.textContent = content;
+            else if(mediaType === 'img') msg.innerHTML = `<img src="${content}">`;
+            else if(mediaType === 'video') msg.innerHTML = `<video src="${content}" controls></video>`;
+            else if(mediaType === 'audio') msg.innerHTML = `<audio src="${content}" controls></audio>`;
+            
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // شروع تماس صوتی / تصویری شبیه‌سازی شده
+        async function startCall(type) {
+            document.getElementById('callName').textContent = activeChatUser;
+            document.getElementById('callAvatarContainer').innerHTML = activeChatUser[0];
+            document.getElementById('callScreen').style.display = 'flex';
+            
+            if(type === 'video') {
+                document.getElementById('videoPreviewBox').style.display = 'block';
+                document.getElementById('callProfileInfo').style.display = 'none';
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    document.getElementById('localVideo').srcObject = localStream;
+                } catch(e) { console.log("دوربین باز نشد"); }
+            } else {
+                document.getElementById('videoPreviewBox').style.display = 'none';
+                document.getElementById('callProfileInfo').style.display = 'block';
+            }
+        }
+
+        function endCall() {
+            if(localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+            }
+            document.getElementById('callScreen').style.display = 'none';
         }
     </script>
 </body>
